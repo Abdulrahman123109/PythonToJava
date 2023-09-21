@@ -6,32 +6,32 @@ public class BSTMultiSet<T extends Comparable<T>> implements MultiSet<T>{
 
     @Override
     public void add(T item) {
-
+    this.bst.insert(item);
     }
 
     @Override
     public void remove(T item) {
-
+        this.bst.delete(item);
     }
 
     @Override
     public boolean contains(T item) {
-        return false;
+        return this.bst.contains(item);
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.bst.isEmpty();
     }
 
     @Override
     public int count(T item) {
-        return 0;
+        return this.bst.count(item);
     }
 
     @Override
     public int size() {
-        return 0;
+        return this.bst.getLength();
     }
 
     // TODO Task 1: hover the red squiggly on the first line and select 'Implement methods'.

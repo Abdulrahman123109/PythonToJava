@@ -1,11 +1,10 @@
-import static sun.swing.MenuItemLayoutHelper.max;
-
 /**
  * A minimal implementation of a binary search tree. See the python version for
  * additional documentation.
- *
+ * <p>
  * You can also see Chapter 6 of <a href="https://www.teach.cs.toronto.edu/~csc148h/winter/notes/">CSC148 Course Notes</a>
  * if you want a refresher on BSTs, but it is required to complete this assignment.
+ *
  * @param <T>
  */
 public class BST<T extends Comparable<T>> {
@@ -17,27 +16,21 @@ public class BST<T extends Comparable<T>> {
     private BST<T> right;
 
     public BST(T root) {
-        if (root != null) { // check to ensure we don't accidentally try to store null at the root!
+        if (root != null) {
             this.root = root;
             this.left = new BST<>();
             this.right = new BST<>();
         }
-        // Note: each of the attributes will default to null
     }
 
-    /**
-     * Alternate constructor, so we don't have to explicitly pass in null.
-     */
     public BST() {
-        this(null);
+        this.root = null;
+        this.left = null;
+        this.right = null;
     }
-
-
-    // TODO Task 2: Implement the BST methods.
 
     public boolean isEmpty() {
-        // TODO implement me!
-        return this.root == null;
+        return (this.root == null);
     }
 
     public boolean contains(T item) {
@@ -55,129 +48,103 @@ public class BST<T extends Comparable<T>> {
 
 
     public void insert(T item) {
-        // TODO implement me!
-        if (this.isEmpty()){
-            BST<T> Newroot = new BST<>();
-            BST<T> Newright = new BST<>();
-            BST<T> Newleft = new BST<>();
-            Newroot = (BST<T>) item;
-            Newright = null;
-            Newleft = null;
-            this.root = (T) Newroot;
-            this.left = null;
-            this.right = null;
-        } else if (item.compareTo(this.root) <= 0){
+        if (this.isEmpty()) {
+            this.root = item;
+            this.left = new BST<>();
+            this.right = new BST<>();
+        } else if (item.compareTo(this.root) <= 0) {
             this.left.insert(item);
-        }
-        else{
+        } else {
             this.right.insert(item);
         }
     }
 
 
     public void delete(T item) {
-        // TODO implement me!
-        if (this.isEmpty()){
+        if (this.isEmpty()) {
             ;
-        }
-        else if(this.root == item){
+        } else if (this.root == item) {
             this.deleteRoot();
         } else if (item.compareTo(this.root) < 0) {
             this.left.delete(item);
-        }else{
+        } else {
             this.right.delete(item);
         }
+
     }
 
     private void deleteRoot() {
-        // TODO implement me!
-        if (this.left.isEmpty() && this.right.isEmpty()){
+        if (this.left == null || this.right == null) {
+            ;
+        } else if (this.left.isEmpty() && this.isEmpty()) {
             this.root = null;
-            this.right = null;
-            this.left = null;
-        }else if (this.left.isEmpty()){
-            BST<T> Newroot = new BST<>();
-            BST<T> Newright = new BST<>();
-            BST<T> Newleft = new BST<>();
-            Newroot = (BST<T>) this.right.root;
-            Newright = this.right.right;
-            Newleft = this.right.left;
-            this.root = (T) Newroot;
-            this.right = Newright;
-            this.left = Newleft;
+        } else if (this.left.isEmpty()) {
+            this.root = this.right.root;
+            this.left = this.right.left;
+            this.right = this.right.right;
         } else if (this.right.isEmpty()) {
-            BST<T> Newroot = new BST<>();
-            BST<T> Newright = new BST<>();
-            BST<T> Newleft = new BST<>();
-            Newroot = (BST<T>) this.left.root;
-            Newright = this.left.right;
-            Newleft = this.left.left;
-            this.root = (T) Newroot;
-            this.right = Newright;
-            this.left = Newleft;
-        }else{
+            this.root = this.left.root;
+            this.right = this.left.right;
+            this.left = this.left.left;
+        } else {
             this.root = this.left.extractMax();
         }
     }
 
 
     private T extractMax() {
-        // TODO implement me!
-        if (this.right.isEmpty()){
-            BST<T> max_item = new BST<>();
-            max_item = (BST<T>) this.root;
-            BST<T> Newroot = new BST<>();
-            BST<T> Newright = new BST<>();
-            BST<T> Newleft = new BST<>();
-            Newroot = (BST<T>) this.left.root;
-            Newright = this.left.right;
-            Newleft = this.left.left;
-            this.root = (T) Newroot;
-            this.right = Newright;
-            this.left = Newleft;
-            return (T) max_item;
-        }else{
-            return this.right.extractMax();
+        if (this.right.isEmpty()) {
+            T max_item = this.root;
+            this.deleteRoot();
+            return (max_item);
+        } else {
+            return (this.right.extractMax());
         }
-        // dummy code; replace with correct code when you implement this.
     }
 
     public int height() {
-        // TODO implement me!
-        if(this.isEmpty()){
-            return 0;
-        }else{
-            return max(this.left.height(), this.right.height()) + 1;
+        if (this.isEmpty()) {
+            return (0);
+        } else {
+            return (Math.max(this.left.height(), this.right.height()) + 1);
         }
     }
 
     public int count(T item) {
-        // TODO implement me!
-        if (this.isEmpty()){
-            return 0;
-        } else if (this.root.compareTo(item)>0) {
-            return this.left.count(item);
-        } else if ( this.root == item) {
-            return 1 + this.left.count(item) + this.right.count(item);
-        }else{
-            return this.right.count(item);
+        if (this.isEmpty()) {
+            return (0);
+        } else if (this.root.compareTo(item) > 0) {
+            return (this.left.count(item));
+        } else if (this.root.equals(item)) {
+            return (1 + this.left.count(item) + this.right.count(item));
+        } else {
+            return (this.right.count(item));
         }
-
     }
 
     public int getLength() {
-        // TODO implement me!
-        if(this.isEmpty()){
-            return 0;
-        }
-        else{
-            return 1 + this.left.getLength() + this.right.getLength();
+        if (this.isEmpty()) {
+            return (0);
+        } else {
+            return (1 + this.left.getLength() + this.right.getLength());
         }
     }
 
     public static void main(String[] args) {
-        // TODO you can write any code you want here and run this file to confirm that
-        //      your code is working as it should. We will not run this when testing your code.
+        BST<Integer> tree1 = new BST<>(1);
+        BST<Integer> tree2 = new BST<>(3);
+        BST<Integer> tree3 = new BST<>(5);
+        BST<Integer> tree4 = new BST<>(4);
+        BST<Integer> tree5 = new BST<>(10);
+        tree2.left = tree1;
+        tree2.right = tree3;
+        tree3.left = tree4;
+        tree3.right = tree5;
+        //        tree2(3)
+        //   tree1(1)   tree3(5)
+        //           tree4(4)  tree5(10)
+        tree3.deleteRoot();
+        System.out.println(tree3.root);
     }
 
 }
